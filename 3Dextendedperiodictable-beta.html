@@ -798,7 +798,7 @@
     <script>
         // Element properties
         const elements = [
-            { atomicNumber: 1, symbol: 'H', name: 'Hydrogen-1', atomicWeight: '1.008', abundance: 99.98, color: 0xffffff, superscript: false, superscriptValue: '', symbolLength: 1, superscriptLength: 0 },
+           // { atomicNumber: 1, symbol: 'H', name: 'Hydrogen-1', atomicWeight: '1.008', abundance: 99.98, color: 0xffffff, superscript: false, superscriptValue: '', symbolLength: 1, superscriptLength: 0 },
             { atomicNumber: 1, symbol: 'H', name: 'Deuterium', atomicWeight: '2.014', abundance: 0.02, color: 0x00ffff, superscript: true, superscriptValue: '2', symbolLength: 1, superscriptLength: 1 },
             { atomicNumber: 1, symbol: 'H', name: 'Tritium', atomicWeight: '3.016', abundance: 0.00000000001, color: 0x0000ff, superscript: true, superscriptValue: '3', symbolLength: 1, superscriptLength: 1 },
             { atomicNumber: 3, symbol: 'Li', name: 'Lithium-6', atomicWeight: '6.015', abundance: 7.5, color: 0xffa07a, superscript: true, superscriptValue: '6', symbolLength: 2, superscriptLength: 1 },
@@ -1257,6 +1257,83 @@ const orientationGizmo = new OrientationGizmo(camera);
         controls.maxDistance = 230;
         controls.zoomSpeed = 1.5; // Adjust zoom sensitivity
         
+
+
+        // Main cube for Hydrogen
+        const mainGeometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+        const mainMaterial = new THREE.MeshPhongMaterial({ color: 0x808080, transparent: true, opacity: 0.3, shininess: 10, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending }); // 50% transparent
+        const mainCube = new THREE.Mesh(mainGeometry, mainMaterial);
+        mainCube.renderOrder = 1;
+        scene.add(mainCube);
+
+        // Adding a transparent inner plane at the mid-depth of the outer cube
+        const planeGeometry = new THREE.PlaneGeometry(1, 1);
+        const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.1, side: THREE.DoubleSide });
+        const innerPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+        innerPlane.position.set(0, 0, -0.08);
+        innerPlane.renderOrder = 0;
+        scene.add(innerPlane);
+
+        // Adding text labels for atomic number, name, and weight
+        const loader = new THREE.FontLoader();
+        loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+            const textMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            
+            // Atomic Number
+            const atomicNumberGeometry = new THREE.TextGeometry('1', {
+                font: font,
+                size: 0.15,
+                height: 0.01, depth: 0
+            });
+            const atomicNumberMesh = new THREE.Mesh(atomicNumberGeometry, textMaterial);
+            atomicNumberMesh.position.set(-0.55, 0.35, -0.05);
+            atomicNumberMesh.renderOrder = 1;
+            scene.add(atomicNumberMesh);
+
+            // Element Name
+            const elementNameGeometry = new THREE.TextGeometry('Hydrogen', {
+                font: font,
+                size: 0.07,
+                height: 0.01
+            });
+            const elementNameMesh = new THREE.Mesh(elementNameGeometry, textMaterial);
+            elementNameMesh.position.set(-0.5, -0.4, -0.05);
+            elementNameMesh.renderOrder = 1;
+            scene.add(elementNameMesh);
+
+            // Atomic Weight
+            const atomicWeightGeometry = new THREE.TextGeometry('1.008', {
+                font: font,
+                size: 0.07,
+                height: 0.01
+            });
+            const atomicWeightMesh = new THREE.Mesh(atomicWeightGeometry, textMaterial);
+            atomicWeightMesh.position.set(-0.5, -0.55, -0.05);
+            atomicWeightMesh.renderOrder = 1;
+            scene.add(atomicWeightMesh);
+        });
+
+        // Function to create smaller cubes to form an 'H'
+        function addSmallCube(x, y, z, sizeX, sizeY, sizeZ) {
+            const smallGeometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ);
+            const smallMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000, transparent: true, opacity: 0.9, shininess: 100, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending });
+            const smallCube = new THREE.Mesh(smallGeometry, smallMaterial);
+            smallCube.position.set(x, y, z);
+            smallCube.renderOrder = 0;
+            scene.add(smallCube);
+        }
+
+        // Adding smaller cubes to form an 'H'
+        const depth = 0.1;
+        // Vertical left line of 'H'
+        addSmallCube(-0.2, 0.1, 0, 0.08, 0.6, depth);
+        // Vertical right line of 'H'
+        addSmallCube(0.2, 0.1, 0, 0.08, 0.6, depth);
+        // Horizontal connector of 'H'
+        addSmallCube(0, 0.1, 0, 0.3, 0.08, depth);
+
+
+
         // Function to create cubes with different formats based on properties
         function createCube(element, position, index) {
             const { atomicNumber, symbol, name, atomicWeight, abundance, color, superscript, superscriptValue, symbolLength, superscriptLength } = element;
@@ -1381,7 +1458,7 @@ const orientationGizmo = new OrientationGizmo(camera);
         
         // Adding cubes for each element with adjusted positioning for isotopes
         const positions = [
-            { x: 0, y: 0, z: 0 },
+           // { x: 0, y: 0, z: 0 },
             { x: 0, y: 0, z: 3 },
             { x: 0, y: 0, z: 6 },
             { x: 0, y: -3, z: 0 },
@@ -1410,296 +1487,296 @@ const orientationGizmo = new OrientationGizmo(camera);
             { x: 3, y: -12, z: 6 },
             { x: 3, y: -12, z: 9 },
             { x: 3, y: -12, z: 0 },
+            { x: 3, y: -18, z: 0 },
             { x: 3, y: -18, z: 3 },
             { x: 3, y: -18, z: 6 },
             { x: 3, y: -18, z: 9 },
             { x: 3, y: -18, z: 12 },
             { x: 3, y: -18, z: 15 },
-            { x: 3, y: -18, z: 18 },
-            { x: 6, y: -9, z: 3 },
-            { x: 6, y: -12, z: 0 },
-            { x: 6, y: -15, z: 3 },
-            { x: 6, y: -15, z: 3 },
-            { x: 6, y: -18, z: 3 },
-            { x: 6, y: -18, z: 6 }, //Ac 228
-            { x: 9, y: -15, z: -3 },  //Cerium 136
-            { x: 9, y: -15, z: 0 },  //138
-            { x: 9, y: -15, z: 3 },    //140  - element quoted
-            { x: 9, y: -15, z: 6 },    //142
-            { x: 12, y: -15, z: 3 },  //Pr
-            { x: 15, y: -15, z: -3 },  //142
-            { x: 15, y: -15, z: 0 },  //143
-            { x: 15, y: -15, z: 3 },  //144
-            { x: 15, y: -15, z: 6 },  //145
-            { x: 15, y: -15, z: 9 },  //146
-            { x: 15, y: -15, z: 15 },  //148
-            { x: 15, y: -15, z: 18 },  //150
-            { x: 18, y: -15, z: 3 },  //Promethium
-            { x: 21, y: -15, z: -15 },  //Samarium-144
-            { x: 21, y: -15, z: -6 },  //Samarium-147
-            { x: 21, y: -15, z: -3 },  //Samarium-148
-            { x: 21, y: -15, z: 0 },  //Samarium-149
-            { x: 21, y: -15, z: 3 },  //Samarium-150  ee
-            { x: 21, y: -15, z: 9 },  //Samarium-152
-            { x: 21, y: -15, z: 15 },  //Samarium-154
-            { x: 24, y: -15, z: 3 },  //Europium-151
-            { x: 24, y: -15, z: 9 },  //Europium-153
-            { x: 27, y: -15, z: -12 },  //Gadolinium-152
-            { x: 27, y: -15, z: -6 },  //154
-            { x: 27, y: -15, z: -3 },   //155
-            { x: 27, y: -15, z: 0 },    //156
-            { x: 27, y: -15, z: 3 },    //157 ee
-            { x: 27, y: -15, z: 6 },   //158
-            { x: 27, y: -15, z: 12 },   //160
-            { x: 30, y: -15, z: 3 },    //terbium
-            { x: 33, y: -15, z: -15 },     //Dysprosium
-            { x: 33, y: -15, z: -9 },
+            { x: 6, y: -9, z: 0 },
+            { x: 6, y: -12, z: -3 },
+            { x: 6, y: -15, z: 0 },
+            { x: 6, y: -15, z: 6 },
+            { x: 6, y: -18, z: 0 },
+            { x: 6, y: -18, z: 3 }, //Ac 228
+            { x: 9, y: -15, z: -6 },  //Cerium 136
+            { x: 9, y: -15, z: -3 },  //138
+            { x: 9, y: -15, z: 0 },    //140  - element quoted
+            { x: 9, y: -15, z: 3 },    //142
+            { x: 12, y: -15, z: 0 },  //Pr
+            { x: 15, y: -15, z: -6 },  //142
+            { x: 15, y: -15, z: -3 },  //143
+            { x: 15, y: -15, z: 0 },  //144
+            { x: 15, y: -15, z: 3 },  //145
+            { x: 15, y: -15, z: 6 },  //146
+            { x: 15, y: -15, z: 12 },  //148
+            { x: 15, y: -15, z: 15 },  //150
+            { x: 18, y: -15, z: 0 },  //Promethium
+            { x: 21, y: -15, z: -18 },  //Samarium-144
+            { x: 21, y: -15, z: -9 },  //Samarium-147
+            { x: 21, y: -15, z: -6 },  //Samarium-148
+            { x: 21, y: -15, z: -3 },  //Samarium-149
+            { x: 21, y: -15, z: 0 },  //Samarium-150  ee
+            { x: 21, y: -15, z: 6 },  //Samarium-152
+            { x: 21, y: -15, z: 12 },  //Samarium-154
+            { x: 24, y: -15, z: 0 },  //Europium-151
+            { x: 24, y: -15, z: 6 },  //Europium-153
+            { x: 27, y: -15, z: -15 },  //Gadolinium-152
+            { x: 27, y: -15, z: -12 },  //154
+            { x: 27, y: -15, z: -6 },   //155
+            { x: 27, y: -15, z: -3 },    //156
+            { x: 27, y: -15, z: 0 },    //157 ee
+            { x: 27, y: -15, z: 3 },   //158
+            { x: 27, y: -15, z: 9 },   //160
+            { x: 30, y: -15, z: 0 },    //terbium
+            { x: 33, y: -15, z: -12 },     //Dysprosium
+            { x: 33, y: -15, z: -6 },
+            { x: 33, y: -15, z: 0 },
             { x: 33, y: -15, z: -3 },
             { x: 33, y: -15, z: 0 },
             { x: 33, y: -15, z: 3 },
-            { x: 33, y: -15, z: 6 },
-            { x: 33, y: -15, z: 9 },     //164
-            { x: 36, y: -15, z: 3 },   //Holmium
-            { x: 39, y: -15, z: -12 },  //ERbium
-            { x: 39, y: -15, z: -6 },   //Erbium
-            { x: 39, y: -15, z: 0 },
-            { x: 39, y: -15, z: 3 }, //ee 167
-            { x: 39, y: -15, z: 6 },
-            { x: 39, y: -15, z: 12 },
-            { x: 42, y: -15, z: 3 },   //Thulium
-            { x: 45, y: -15, z: -12 },   //Ytterbium
-            { x: 45, y: -15, z: -6 },  //170
+            { x: 33, y: -15, z: 6 },     //164
+            { x: 36, y: -15, z: 0 },   //Holmium
+            { x: 39, y: -15, z: -9 },  //ERbium
+            { x: 39, y: -15, z: -3 },   //Erbium
+            { x: 39, y: -15, z: -3 },
+            { x: 39, y: -15, z: 0 }, //ee 167
+            { x: 39, y: -15, z: 3 },
+            { x: 39, y: -15, z: 9 },
+            { x: 42, y: -15, z: 0 },   //Thulium
+            { x: 45, y: -15, z: -15 },   //Ytterbium
+            { x: 45, y: -15, z: -9 },  //170
+            { x: 45, y: -15, z: -6 },
             { x: 45, y: -15, z: -3 },
             { x: 45, y: -15, z: 0 },
             { x: 45, y: -15, z: 3 },
-            { x: 45, y: -15, z: 6 },
-            { x: 45, y: -15, z: 12 },
-            { x: 48, y: -15, z: 3 },  //Lut
-            { x: 48, y: -15, z: 6 }, //lut 176
-            { x: 9, y: -18, z: 3 },  //Thorium 232
-            { x: 12, y: -18, z: 3 },  //Protactinium
-            { x: 15, y: -18, z: -9 },   //Ur
-            { x: 15, y: -18, z: -6 }, 
-            { x: 15, y: -18, z: 3 },    //Ur238
-            { x: 18, y: -18, z: 3 },   //Neptunium
-            { x: 21, y: -18, z: -15 },         //Plutonium 238
+            { x: 45, y: -15, z: 9 },
+            { x: 48, y: -15, z: 0 },  //Lut
+            { x: 48, y: -15, z: 3 }, //lut 176
+            { x: 9, y: -18, z: 0 },  //Thorium 232
+            { x: 12, y: -18, z: 0 },  //Protactinium
+            { x: 15, y: -18, z: -12 },   //Ur
+            { x: 15, y: -18, z: -9 }, 
+            { x: 15, y: -18, z: 0 },    //Ur238
+            { x: 18, y: -18, z: 0 },   //Neptunium
+            { x: 21, y: -18, z: -12 },         //Plutonium 238
+            { x: 21, y: -18, z: -15 },
             { x: 21, y: -18, z: -12 },
-            { x: 21, y: -18, z: -9 },
-            { x: 21, y: -18, z: 3 },  // 244   
-            { x: 24, y: -18, z: -3 },  //241  Americium
-            { x: 24, y: -18, z: 3 },  //243 
-            { x: 27, y: -18, z: 3 },   //curium
-            { x: 27, y: -18, z: 6 },
-            { x: 27, y: -18, z: 12 },       //curium 247
-            { x: 30, y: -18, z: 3 },       //247 Berkelium
-            { x: 30, y: -18, z: 9 },      //249
-            { x: 33, y: -18, z: -3 },    //californium 249
-            { x: 33, y: -18, z: 3 },
-            { x: 36, y: -18, z: 3 },     //Es 99
-            { x: 39, y: -18, z: 3 },    //Fermium
-            { x: 42, y: -18, z: 3 },   //mendelevium
-            { x: 45, y: -18, z: 3 },      //nobelium
-            { x: 48, y: -18, z: 3 },     //lawrencium 262     --- END OF ACTINIDES
-            { x: 51, y: -9, z: -6 },     //titanium
+            { x: 21, y: -18, z: 0 },  // 244   
+            { x: 24, y: -18, z: -6 },  //241  Americium
+            { x: 24, y: -18, z: 0 },  //243 
+            { x: 27, y: -18, z: 0 },   //curium
+            { x: 27, y: -18, z: 3 },
+            { x: 27, y: -18, z: 9 },       //curium 247
+            { x: 30, y: -18, z: 0 },       //247 Berkelium
+            { x: 30, y: -18, z: 6 },      //249
+            { x: 33, y: -18, z: -6 },    //californium 249
+            { x: 33, y: -18, z: 0 },
+            { x: 36, y: -18, z: 0 },     //Es 99
+            { x: 39, y: -18, z: 0 },    //Fermium
+            { x: 42, y: -18, z: 0 },   //mendelevium
+            { x: 45, y: -18, z: 0 },      //nobelium
+            { x: 48, y: -18, z: 0 },     //lawrencium 262     --- END OF ACTINIDES
+            { x: 51, y: -9, z: -9 },     //titanium
+            { x: 51, y: -9, z: -6 },
             { x: 51, y: -9, z: -3 },
             { x: 51, y: -9, z: 0 },
             { x: 51, y: -9, z: 3 },
-            { x: 51, y: -9, z: 6 },
-            { x: 51, y: -12, z: -9 },  //zirco
-            { x: 51, y: -12, z: -6 },  //zirco on plane of abundance
+            { x: 51, y: -12, z: -6 },  //zirco
+            { x: 51, y: -12, z: -9 },  //zirco on plane of abundance
+            { x: 51, y: -12, z: -6 },
             { x: 51, y: -12, z: -3 },
-            { x: 51, y: -12, z: 0 },
-            { x: 51, y: -12, z: 3},
-            { x: 51, y: -15, z: -6 },   //hafnium  174
-            { x: 51, y: -15, z: 3 },  //176
-            { x: 51, y: -15, z: 6 },   //177
-            { x: 51, y: -15, z: 3 },     //178   abundance plane du
-            { x: 51, y: -15, z: 12 },    //179
-            { x: 51, y: -15, z: 15 },   //180
-            { x: 51, y: -18, z: 3 },    //Rutherfordium 267
-            { x: 54, y: -9, z: 0 },   // Vanadium
-            { x: 54, y: -9, z: 3 },   // Vana51  abundance plane
-            { x: 54, y: -12, z: 3 },     // Niobium93
-            { x: 54, y: -15, z: 0 },   //Tantalum 180
-            { x: 54, y: -15, z: 3 },   // Tantalum  181
-            { x: 54, y: -18, z: 3 },    //    Dubnium  - 268
-            { x: 57, y: -9, z: -3 },     //Chromium
+            { x: 51, y: -12, z: 0},
+            { x: 51, y: -15, z: -9 },   //hafnium  174
+            { x: 51, y: -15, z: 0 },  //176
+            { x: 51, y: -15, z: 3 },   //177
+            { x: 51, y: -15, z: 0 },     //178   abundance plane du
+            { x: 51, y: -15, z: 9 },    //179
+            { x: 51, y: -15, z: 12 },   //180
+            { x: 51, y: -18, z: 0 },    //Rutherfordium 267
+            { x: 54, y: -9, z: -3 },   // Vanadium
+            { x: 54, y: -9, z: 0 },   // Vana51  abundance plane
+            { x: 54, y: -12, z: 0 },     // Niobium93
+            { x: 54, y: -15, z: -3 },   //Tantalum 180
+            { x: 54, y: -15, z: 0 },   // Tantalum  181
+            { x: 54, y: -18, z: 0 },    //    Dubnium  - 268
+            { x: 57, y: -9, z: -6 },     //Chromium
+            { x: 57, y: -9, z: 0 },
             { x: 57, y: -9, z: 3 },
             { x: 57, y: -9, z: 6 },
-            { x: 57, y: -9, z: 9 },
-            { x: 57, y: -12, z: -9 },   //  Mol
-            { x: 57, y: -12, z: -3 },
+            { x: 57, y: -12, z: -6 },   //  Mol
             { x: 57, y: -12, z: 0 },
-            { x: 57, y: -12, z: 3 },   // molybdenum  95.94 so iso 96
+            { x: 57, y: -12, z: -3 },
+            { x: 57, y: -12, z: 0 },   // molybdenum  95.94 so iso 96
+            { x: 57, y: -12, z: 3 },
             { x: 57, y: -12, z: 6 },
-            { x: 57, y: -12, z: 9 },
-            { x: 57, y: -12, z: 15 },
-            { x: 57, y: -15, z: -3 },  // Tungsten  
-            { x: 57, y: -15, z: 0 },
-            { x: 57, y: -15, z: 3 },     //  Plane
-            { x: 57, y: -15, z: 9 },   // W186
-            { x: 57, y: -18, z: 3 },    //Seaborgium - 271
-            { x: 60, y: -9, z: 3 },        //Manganese-55
-            { x: 60, y: -12, z: 3 },   // Technitium 98  --- probably something else around 98 for AW to
-            { x: 60, y: -15, z: -3 },   //Rhenium 185  
-            { x: 60, y: -15, z: 3 },   //Rhenium  187 plane of abundance
-            { x: 60, y: -18, z: 3 },     // Bohrium-270 
-            { x: 63, y: -9, z: 3 },     // Fe  56 on abundance 
-            { x: 63, y: -9, z: 6 },    // Fe57 
-            { x: 63, y: -9, z: 9 },    //58  There is more Iron Isotopes 
-            { x: 63, y: -12, z: 3 },   // Ruthenium 102   // There are othre  Ru 's'
-            { x: 63, y: -12, z: 9 },  //104
-            { x: 63, y: -15, z: 3 },    //osmium  192
-            { x: 63, y: -15, z: -3 },   // osmium 190
-            { x: 63, y: -18, z: 3 },    // Hassium-277
-            { x: 66, y: -9, z: 3 },   //Cobalt
-            { x: 66, y: -12, z: 3 }, // Rhodium 103
-            { x: 66, y: -15, z: 0 },    // Iridium 191
-            { x: 66, y: -15, z: 3 },     //193 
-            { x: 66, y: -18, z: 3 },   //Meitnerium 278 
-            { x: 69, y: -9, z: 3 },   // Nickel 58 0- abundance
-            { x: 69, y: -9, z: 9 },  // Nicketl 60
-            { x: 69, y: -9, z: 12 },   //61
-            { x: 69, y: -9, z: 15 },   //62
-            { x: 69, y: -9, z: 21 },  //64
-            { x: 69, y: -12, z: -9 },   // Palladium 102   abunda at 106
+            { x: 57, y: -12, z: 12 },
+            { x: 57, y: -15, z: 0 },  // Tungsten  
+            { x: 57, y: -15, z: -3 },
+            { x: 57, y: -15, z: 0 },     //  Plane
+            { x: 57, y: -15, z: -3 },   // W186
+            { x: 57, y: -18, z: 0 },    //Seaborgium - 271
+            { x: 60, y: -9, z: 0 },        //Manganese-55
+            { x: 60, y: -12, z: 0 },   // Technitium 98  --- probably something else around 98 for AW to
+            { x: 60, y: -15, z: -6 },   //Rhenium 185  
+            { x: 60, y: -15, z: 0 },   //Rhenium  187 plane of abundance
+            { x: 60, y: -18, z: 0 },     // Bohrium-270 
+            { x: 63, y: -9, z: 0 },     // Fe  56 on abundance 
+            { x: 63, y: -9, z: 3 },    // Fe57 
+            { x: 63, y: -9, z: 6 },    //58  There is more Iron Isotopes 
+            { x: 63, y: -12, z: 0 },   // Ruthenium 102   // There are othre  Ru 's'
+            { x: 63, y: -12, z: 6 },  //104
+            { x: 63, y: -15, z: 0 },    //osmium  192
+            { x: 63, y: -15, z: -6 },   // osmium 190
+            { x: 63, y: -18, z: 0 },    // Hassium-277
+            { x: 66, y: -9, z: 0 },   //Cobalt
+            { x: 66, y: -12, z: 0 }, // Rhodium 103
+            { x: 66, y: -15, z: -3 },    // Iridium 191
+            { x: 66, y: -15, z: 0 },     //193 
+            { x: 66, y: -18, z: 0 },   //Meitnerium 278 
+            { x: 69, y: -9, z: 0 },   // Nickel 58 0- abundance
+            { x: 69, y: -9, z: 6 },  // Nicketl 60
+            { x: 69, y: -9, z: 9 },   //61
+            { x: 69, y: -9, z: 12 },   //62
+            { x: 69, y: -9, z: 18 },  //64
+            { x: 69, y: -12, z: -12 },   // Palladium 102   abunda at 106
+            { x: 69, y: -12, z: -6 },
             { x: 69, y: -12, z: -3 },
-            { x: 69, y: -12, z: 0 },
-            { x: 69, y: -12, z: 3 },  //Abund
-            { x: 69, y: -12, z: 9 },
-            { x: 69, y: -12, z: 15 },
-            { x: 69, y: -15, z: -15 },   //platium 190  abund 195
-            { x: 69, y: -15, z: -9 },  //192
-            { x: 69, y: -15, z: -3 },   //194
-            { x: 69, y: -15, z: 0 },   // 195abundance (missed alignment?)
-            { x: 69, y: -15, z: 3 },  // 196
-            { x: 69, y: -15, z: 9 },   //198
-            { x: 69, y: -18, z: 3 }, // Darmstadtium 281
-            { x: 72, y: -9, z: 3 },  // Cu 63
-            { x: 72, y: -9, z: 9 },  //Cu65
-            { x: 72, y: -12, z: 3 },       //Ag
-            { x: 72, y: -12, z: 9 },   //Ag 109
-            { x: 72, y: -15, z: 3 },   //Au 197
-            { x: 72, y: -18, z: 3 },    //Rg
-            { x: 75, y: -9, z: -3 },  //zinc 64
-            { x: 75, y: -9, z: 3 },  // zinc 66 abdn
-            { x: 75, y: -9, z: 6 },  //67
-            { x: 75, y: -9, z: 9 },  //68
-            { x: 75, y: -9, z: 15 }, //70
-            { x: 75, y: -12, z: -15 },   // Cadm 106 abdn 112
-            { x: 75, y: -12, z: -9 },
-            { x: 75, y: -12, z: -3 },  //110
-            { x: 75, y: -12, z: 0 },   //111
-            { x: 75, y: -12, z: 3 },  //112
-            { x: 75, y: -12, z: 6 },  //113
-            { x: 75, y: -12, z: 9 },  //114
-            { x: 75, y: -12, z: 15 },  //116
-            { x: 75, y: -15, z: -9 },    //Mercury 196
-            { x: 75, y: -15, z: -3 }, //198
-            { x: 75, y: -15, z: 0 },  //199
-            { x: 75, y: -15, z: 3 },  // Abudn 200 weigh 200.59
+            { x: 69, y: -12, z: 0 },  //Abund
+            { x: 69, y: -12, z: 6 },
+            { x: 69, y: -12, z: 12 },
+            { x: 69, y: -15, z: -12 },   //platium 190  abund 195
+            { x: 69, y: -15, z: -12 },  //192
+            { x: 69, y: -15, z: -6 },   //194
+            { x: 69, y: -15, z: -3 },   // 195abundance (missed alignment?)
+            { x: 69, y: -15, z: 0 },  // 196
+            { x: 69, y: -15, z: -6 },   //198
+            { x: 69, y: -18, z: 0 }, // Darmstadtium 281
+            { x: 72, y: -9, z: 0 },  // Cu 63
+            { x: 72, y: -9, z: 6 },  //Cu65
+            { x: 72, y: -12, z: 0 },       //Ag
+            { x: 72, y: -12, z: 6 },   //Ag 109
+            { x: 72, y: -15, z: 0 },   //Au 197
+            { x: 72, y: -18, z: 0 },    //Rg
+            { x: 75, y: -9, z: -6 },  //zinc 64
+            { x: 75, y: -9, z: 0 },  // zinc 66 abdn
+            { x: 75, y: -9, z: 3 },  //67
+            { x: 75, y: -9, z: 6 },  //68
+            { x: 75, y: -9, z: 12 }, //70
+            { x: 75, y: -12, z: -18 },   // Cadm 106 abdn 112
+            { x: 75, y: -12, z: -12 },
+            { x: 75, y: -12, z: -6 },  //110
+            { x: 75, y: -12, z: -3 },   //111
+            { x: 75, y: -12, z: 0 },  //112
+            { x: 75, y: -12, z: 3 },  //113
+            { x: 75, y: -12, z: 6 },  //114
+            { x: 75, y: -12, z: 12 },  //116
+            { x: 75, y: -15, z: -12 },    //Mercury 196
+            { x: 75, y: -15, z: -6 }, //198
+            { x: 75, y: -15, z: -3 },  //199
+            { x: 75, y: -15, z: 0 },  // Abudn 200 weigh 200.59
+            { x: 75, y: -15, z: 3 },
             { x: 75, y: -15, z: 6 },
-            { x: 75, y: -15, z: 9 },
-            { x: 75, y: -15, z: 15 },
-            { x: 75, y: -18, z: 0 },   //Copernicium 286
-            { x: 78, y: -3, z: 0 },   //Boron 10
-            { x: 78, y: -3, z: 3 },     // Boron 11
-            { x: 78, y: -6, z: 3 },    //Aluminium 27
-            { x: 78, y: -9, z: 3 },   //Gallium 69
-            { x: 78, y: -9, z: 9 },   //Gallium 71
-            { x: 78, y: -12, z: 0 },    //Indium-113
-            { x: 78, y: -12, z: 3 },    //Indium 115
-            { x: 78, y: -15, z: 0 },    //Thallium 203
-            { x: 78, y: -15, z: 3 },    //Thallium 205
-            { x: 78, y: -18, z: 3 },    //Nihonium-284
-            { x: 81, y: -3, z: 3 },  // Crbon12
-            { x: 81, y: -3, z: 6 },    //Carbon13
-            { x: 81, y: -3, z: 9 },     //Carbon14
-            { x: 81, y: -6, z: 3 },    // Silicon-28
+            { x: 75, y: -15, z: 12 },
+            { x: 75, y: -18, z: -3 },   //Copernicium 286
+            { x: 78, y: -3, z: -3 },   //Boron 10
+            { x: 78, y: -3, z: 0 },     // Boron 11
+            { x: 78, y: -6, z: 0 },    //Aluminium 27
+            { x: 78, y: -9, z: 0 },   //Gallium 69
+            { x: 78, y: -9, z: 6 },   //Gallium 71
+            { x: 78, y: -12, z: -3 },    //Indium-113
+            { x: 78, y: -12, z: 0 },    //Indium 115
+            { x: 78, y: -15, z: -3 },    //Thallium 203
+            { x: 78, y: -15, z: 0 },    //Thallium 205
+            { x: 78, y: -18, z: 0 },    //Nihonium-284
+            { x: 81, y: -3, z: 0 },  // Crbon12
+            { x: 81, y: -3, z: 3 },    //Carbon13
+            { x: 81, y: -3, z: 6 },     //Carbon14
+            { x: 81, y: -6, z: 0 },    // Silicon-28
+            { x: 81, y: -6, z: 3 },
             { x: 81, y: -6, z: 6 },
-            { x: 81, y: -6, z: 9 },
-            { x: 81, y: -9, z: -6 },    //Germanium  70 --73 is abdn
-            { x: 81, y: -9, z: 0 },  //72
-            { x: 81, y: -9, z: 3 },   //73
-            { x: 81, y: -9, z: 6 },  //74
-            { x: 81, y: -9, z: 12 },   //76  
-            { x: 81, y: -12, z: -15 },   //112  abdn 118
+            { x: 81, y: -9, z: -3 },    //Germanium  70 --73 is abdn
+            { x: 81, y: -9, z: -3},  //72
+            { x: 81, y: -9, z: 0 },   //73
+            { x: 81, y: -9, z: 3 },  //74
+            { x: 81, y: -9, z: 9 },   //76  
+            { x: 81, y: -12, z: -18 },   //112  abdn 118
+            { x: 81, y: -12, z: -12 },
             { x: 81, y: -12, z: -9 },
             { x: 81, y: -12, z: -6 },
             { x: 81, y: -12, z: -3 },
             { x: 81, y: -12, z: 0 },
-            { x: 81, y: -12, z: 3 },
-            { x: 81, y: -15, z: -6 },
+            { x: 81, y: -15, z: -9 },
+            { x: 81, y: -15, z: -3 },
             { x: 81, y: -15, z: 0 },
             { x: 81, y: -15, z: 3 },
-            { x: 81, y: -15, z: 6 },
-            { x: 81, y: -18, z: 3 },  //Flerovium 289
-            { x: 84, y: -3, z: 3 },   //Nitrogen 14
-            { x: 84, y: -3, z: 6 },  //15
-            { x: 84, y: -6, z: 3 },   //Phosphorus-31
-            { x: 84, y: -9, z: 3 },      //Arsen75   
-            { x: 84, y: -12, z: 3 },   //Antimony-121 abund
-            { x: 84, y: -12, z: 9 },    //123
-            { x: 84, y: -15, z: 3 },     //Bismuth209
-            { x: 84, y: -18, z: 3 },    //288
-            { x: 84, y: -18, z: 6 }, 
-            { x: 87, y: -3, z: 3 },     // o16
+            { x: 81, y: -18, z: 0 },  //Flerovium 289
+            { x: 84, y: -3, z: 0 },   //Nitrogen 14
+            { x: 84, y: -3, z: 3 },  //15
+            { x: 84, y: -6, z: 0 },   //Phosphorus-31
+            { x: 84, y: -9, z: 0 },      //Arsen75   
+            { x: 84, y: -12, z: 0 },   //Antimony-121 abund
+            { x: 84, y: -12, z: 6 },    //123
+            { x: 84, y: -15, z: 0 },     //Bismuth209
+            { x: 84, y: -18, z: 0 },    //288
+            { x: 84, y: -18, z: 3 }, 
+            { x: 87, y: -3, z: 0 },     // o16
+            { x: 87, y: -3, z: 3 }, 
             { x: 87, y: -3, z: 6 }, 
-            { x: 87, y: -3, z: 9 }, 
-            { x: 87, y: -6, z: 3 },   //S 32
+            { x: 87, y: -6, z: 0 },   //S 32
+            { x: 87, y: -6, z: 3 },
             { x: 87, y: -6, z: 6 },
-            { x: 87, y: -6, z: 9 },
-            { x: 87, y: -6, z: 15 },
-            { x: 87, y: -9, z: -15 },   //Selenium -- 74 abdn at 80--
+            { x: 87, y: -6, z: 12 },
+            { x: 87, y: -9, z: -18 },   //Selenium -- 74 abdn at 80--
+            { x: 87, y: -9, z: -12 },
             { x: 87, y: -9, z: -9 },
             { x: 87, y: -9, z: -6 },
-            { x: 87, y: -9, z: -3 },
-            { x: 87, y: -9, z: 3 },
-            { x: 87, y: -9, z: 9 },
-            { x: 87, y: -12, z: -18 },  //Tellerium-128 is abdfn. this is 120.
+            { x: 87, y: -9, z: 0 },
+            { x: 87, y: -9, z: 6 },
+            { x: 87, y: -12, z: -21 },  //Tellerium-128 is abdfn. this is 120.
+            { x: 87, y: -12, z: -15 },
             { x: 87, y: -12, z: -12 },
             { x: 87, y: -12, z: -9 },
             { x: 87, y: -12, z: -6 },
-            { x: 87, y: -12, z: -3 },
-            { x: 87, y: -12, z: 3 },
-            { x: 87, y: -12, z: 9 },
-            { x: 87, y: -12, z: 9 },
-            { x: 87, y: -15, z: 3 },    //Polonium 209
-            { x: 87, y: -15, z: 6 },
+            { x: 87, y: -12, z: 0 },
+            { x: 87, y: -12, z: 6 },
+            { x: 87, y: -12, z: 6 },
+            { x: 87, y: -15, z: 0 },    //Polonium 209
+            { x: 87, y: -15, z: 3 },
             { x: 87, y: -18, z: 3 },  //liver
-            { x: 90, y: -3, z: 3 },
-            { x: 90, y: -6, z: 3 },           
-            { x: 90, y: -6, z: 6 },
+            { x: 90, y: -3, z: 0 },
+            { x: 90, y: -6, z: 0 },           
+            { x: 90, y: -6, z: 3 },
+            { x: 90, y: -9, z: 0 },
             { x: 90, y: -9, z: 3 },
-            { x: 90, y: -9, z: 6 },
-            { x: 90, y: -12, z: 3 },
-            { x: 90, y: -15, z: 3 },  //Astatin
-            { x: 90, y: -18, z: 3 },  // 117
-            { x: 93, y: 0, z: 0 },    //He3
-            { x: 93, y: 0, z: 3 },
-            { x: 93, y: -3, z: 3 },  // Ne
+            { x: 90, y: -12, z: 0 },
+            { x: 90, y: -15, z: 0 },  //Astatin
+            { x: 90, y: -18, z: 0 },  // 117
+            { x: 93, y: 0, z: -3 },    //He3
+            { x: 93, y: 0, z: 0 },
+            { x: 93, y: -3, z: 0 },  // Ne
+            { x: 93, y: -3, z: 3 },
             { x: 93, y: -3, z: 6 },
-            { x: 93, y: -3, z: 9 },
-            { x: 93, y: -6, z: -9 },  //argon
-            { x: 93, y: -6, z: -3 },    
-            { x: 93, y: -6, z: 3 },
-            { x: 93, y: -9, z: -15 },  //kr
-            { x: 93, y: -9, z: -9 },
+            { x: 93, y: -6, z: -12 },  //argon
+            { x: 93, y: -6, z: -6 },    
+            { x: 93, y: -6, z: 0 },
+            { x: 93, y: -9, z: -18 },  //kr
+            { x: 93, y: -9, z: -12 },
+            { x: 93, y: -9, z: -6 },
             { x: 93, y: -9, z: -3 },
             { x: 93, y: -9, z: 0 },
             { x: 93, y: -9, z: 3 },
-            { x: 93, y: -9, z: 6 },
-            { x: 93, y: -12, z: -18 },   // 124  - 131 is abdn
-            { x: 93, y: -12, z: -12 },
+            { x: 93, y: -12, z: -21 },   // 124  - 131 is abdn
+            { x: 93, y: -12, z: -15 },
+            { x: 93, y: -12, z: -9 },
             { x: 93, y: -12, z: -6 },
             { x: 93, y: -12, z: -3 },
             { x: 93, y: -12, z: 0 },
             { x: 93, y: -12, z: 3 },
-            { x: 93, y: -12, z: 6 },
-            { x: 93, y: -12, z: 12 },
-            { x: 93, y: -12, z: 18 },
-            { x: 93, y: -15, z: 3 },   //radn
-            { x: 93, y: -18, z: 3 }   //ogan
+            { x: 93, y: -12, z: 9 },
+            { x: 93, y: -12, z: 15 },
+            { x: 93, y: -15, z: 0 },   //radn
+            { x: 93, y: -18, z: 0 }   //ogan
 
         ];
 
