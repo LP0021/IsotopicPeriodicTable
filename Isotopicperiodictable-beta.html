@@ -1118,8 +1118,7 @@
             { atomicNumber: 54, symbol: 'Xe', name: 'Xenon-136', atomicWeight: '135.907', abundance: 8.9, color: 0x9370db, superscript: true, superscriptValue: '136', symbolLength: 2, superscriptLength: 3 },
             { atomicNumber: 86, symbol: 'Rn', name: 'Radon-222', atomicWeight: '222.017', abundance: 0.00000000001, color: 0xffd700, superscript: true, superscriptValue: '222', symbolLength: 2, superscriptLength: 3 },
             { atomicNumber: 118, symbol: 'Og', name: 'Oganesson-294', atomicWeight: '[294]', abundance: 0.00000000001, color: 0x8b0000, superscript: true, superscriptValue: '294', symbolLength: 2, superscriptLength: 3 }
-
-
+	  
         ];
 
         // Scene setup
@@ -1452,9 +1451,26 @@ const orientationGizmo = new OrientationGizmo(camera);
 
                 // Ensure the controls are updated to reflect the new target
                 controls.update();
-            } else {
-                console.error(`Element at index ${index} does not exist or is missing a cube.`);
+            } 
+
+	    else {
+
+                // Update camera position to face the element directly
+                camera.position.set(
+                    0,
+                    0,
+                    0 + 2 // Slight offset along Z for face-on view
+                );
+
+                // Update the camera controls' target to the cube's position
+                controls.target.set(0, 0, 0);
+
+                // Ensure the controls are updated to reflect the new target
+                controls.update();
             }
+
+
+
         }
         
         // Adding cubes for each element with adjusted positioning for isotopes
@@ -1495,7 +1511,7 @@ const orientationGizmo = new OrientationGizmo(camera);
             { x: 3, y: -18, z: 12 },
             { x: 3, y: -18, z: 15 },
             { x: 6, y: -9, z: 0 },
-            { x: 6, y: -12, z: -3 },
+            { x: 6, y: -12, z: 0 },
             { x: 6, y: -15, z: 0 },
             { x: 6, y: -15, z: 6 },
             { x: 6, y: -18, z: 0 },
@@ -1777,8 +1793,8 @@ const orientationGizmo = new OrientationGizmo(camera);
             { x: 93, y: -12, z: 9 },
             { x: 93, y: -12, z: 15 },
             { x: 93, y: -15, z: 0 },   //radn
-            { x: 93, y: -18, z: 0 }   //ogan
-            { x: 0, y: 0, z: 0 },
+            { x: 93, y: -18, z: 0 },   //ogan
+            { x: 0, y: 0, z: 1 }
         ];
 
 
